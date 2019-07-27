@@ -15,6 +15,15 @@ const key = "count"
 var c = cache.New(30*time.Minute, 40*time.Minute)
 
 func H(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+
 	cached, found := c.Get(key)
 	if found {
 		log.Println("from cache")
