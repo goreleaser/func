@@ -1,4 +1,4 @@
-module image-to-ascii
+module github.com/goreleaser/func
 
 go 1.12
 

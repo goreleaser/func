@@ -2,8 +2,9 @@ package handler
 
 import (
 	"fmt"
-	"image-to-ascii/count"
 	"net/http"
+
+	"github.com/goreleaser/func/count"
 )
 
 func H(w http.ResponseWriter, r *http.Request) {
