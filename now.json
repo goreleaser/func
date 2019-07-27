@@ -1,5 +1,4 @@
 {
-  "name": "image-to-ascii",
   "version": 2,
   "builds": [{
     "src": "index.go",
