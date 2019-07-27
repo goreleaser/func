@@ -4,5 +4,8 @@
   "builds": [{
     "src": "index.go",
     "use": "@now/go"
-  }]
+  }],
+  "env": {
+    "GITHUB_TOKEN": "@github-token"
+  }
 }
