@@ -3,7 +3,7 @@ module github.com/goreleaser/func
 go 1.12
 
 require (
-	github.com/google/go-github v17.0.0+incompatible
+	github.com/google/go-github v28.1.1+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.8.1
