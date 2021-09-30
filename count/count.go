@@ -2,10 +2,11 @@ package count
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 
-	"github.com/google/go-github/github"
-	"github.com/pkg/errors"
+	"github.com/google/go-github/v39/github"
 	"golang.org/x/oauth2"
 )
 
@@ -20,11 +21,11 @@ func Count(ctx context.Context) (int, error) {
 	var client = github.NewClient(oauth2.NewClient(ctx, ts))
 	result, resp, err := client.Search.Code(
 		ctx,
-		"filename:goreleaser extension:yaml extension:yml path:/",
+		"filename:goreleaser language:yaml -path:/vendor",
 		&github.SearchOptions{ListOptions: github.ListOptions{}},
 	)
 	if err != nil {
-		return 0, errors.Wrap(err, "failed to search")
+		return 0, fmt.Errorf("failed to search: %w", err)
 	}
 	if resp.StatusCode != 200 {
 		return 0, errors.New("search request failed")

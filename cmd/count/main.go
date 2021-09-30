@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(0)
 	c, err := count.Count(context.Background())
 	if err != nil {
 		log.Fatalln(err)

@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/goreleaser/func/count"
-	"github.com/patrickmn/go-cache"
 )
 
-const key = "count"
-
-var c = cache.New(30*time.Minute, 40*time.Minute)
+var previous = 0
+var lock sync.RWMutex
 
 func H(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -24,20 +23,29 @@ func H(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cached, found := c.Get(key)
-	if found {
-		log.Println("from cache")
-		fmt.Fprint(w, cached)
+	lock.RLock()
+	defer lock.RUnlock()
+	if previous > 0 {
+		fmt.Fprint(w, previous)
 		return
 	}
 
+	lock.Lock()
+	defer lock.Unlock()
 	live, err := count.Count(r.Context())
 	if err != nil {
 		log.Println("failed", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprint(w, live)
 	log.Println("live")
-	c.Set(key, live, cache.DefaultExpiration)
+	previous = live
+	fmt.Fprint(w, live)
+	go func() {
+		time.Sleep(time.Hour * 6)
+
+		lock.Lock()
+		defer lock.Unlock()
+		previous = 0
+	}()
 }
